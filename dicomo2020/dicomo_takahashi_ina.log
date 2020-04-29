@@ -1,0 +1,63 @@
+This is e-upTeX, Version 3.14159265-p3.8.2-u1.25-190131-2.6 (utf8.uptex) (TeX Live 2019) (preloaded format=uplatex 2020.1.13)  13 JAN 2020 17:43
+entering extended mode
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**dicomo_takahashi_ina.tex
+(./dicomo_takahashi_ina.tex
+pLaTeX2e <2019-10-01u02>+1 (based on LaTeX2e <2019-10-01> patch level 3)
+(./dicomopapers.cls
+
+LaTeX Warning: You have requested document class `dicomopapers',
+               but the document class provides `ipsj'.
+
+Document Class: ipsj 2012/10/12 v1.04 IPSJ class
+(/usr/local/texlive/2019/texmf-dist/tex/latex/graphics/color.sty
+Package: color 2016/07/10 v1.1e Standard LaTeX Color (DPC)
+
+(/usr/local/texlive/2019/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package color Info: Driver file: dvips.def on input line 147.
+
+(/usr/local/texlive/2019/texmf-dist/tex/latex/graphics-def/dvips.def
+File: dvips.def 2017/06/20 v3.1d Graphics/color driver for dvips
+)
+(/usr/local/texlive/2019/texmf-dist/tex/latex/graphics/dvipsnam.def
+File: dvipsnam.def 2016/06/17 v3.0m Driver-dependent file (DPC,SPQR)
+))
+\c@@paper=\count83
+\h=\dimen118
+\JQ=\dimen119
+\Q=\dimen120
+\@Q=\dimen121
+
+
+./dicomopapers.cls:263: LaTeX Error: Font family `JT1+gt' unknown.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.263 ...tShape{JT1}{gt}{m}{it}{<-> ssub*gt/m/n}{}
+                                                  
+? 
+./dicomopapers.cls:263: Emergency stop.
+ ...                                              
+                                                  
+l.263 ...tShape{JT1}{gt}{m}{it}{<-> ssub*gt/m/n}{}
+                                                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+ 
+Here is how much of TeX's memory you used:
+ 442 strings out of 492748
+ 5767 string characters out of 6140085
+ 70937 words of memory out of 5000000
+ 4978 multiletter control sequences out of 15000+600000
+ 6281 words of font info for 32 fonts, out of 8000000 for 9000
+ 929 hyphenation exceptions out of 8191
+ 26i,0n,23p,175b,22s stack positions out of 5000i,500n,10000p,200000b,80000s
+No pages of output.
