@@ -235,7 +235,7 @@
 %%
 %% Option
 %%
-\ExecuteOptions{a4paper,10pt,twoside,onecolumn,final,openright,DAM,Prooffalse}%!!
+\ExecuteOptions{a4paper,10pt,twoside,twocolumn,final,openright,DAM,Prooffalse}%!!
 \ProcessOptions\relax
 
 
@@ -1371,7 +1371,7 @@ c}}}
 %\selectfont%
 %\normalfont%
 {\bothashira%
-%
+%\copyright \ {\@footyear} Information Processing Society of Japan%
 }}%
 \hfil
 %\fontsize{13\Q}{0\h}%
@@ -1432,7 +1432,8 @@ c}}}
 \rlap{%
 %\fontsize{10\Q}{0\h}\usefont{OT1}{ptm}{m}{n}%Times
 %\selectfont%
-{\bothashira%%
+{\bothashira%
+%{\textcopyrighttx} \ {\@footyear} Information Processing Society of Japan%
 }}%
 \hfil%
 %\fontsize{13\Q}{0\h}%
@@ -1478,7 +1479,7 @@ c}}}
 %%%%%%
 %no
 %%%%%%
-%\hskip1em{\HeadfontE{No.\number\c@number}}%
+\hskip1em{\HeadfontE{No.\number\c@number}}%
 \fi\fi\fi%\fi
 %%%%%%
 %page
@@ -1487,48 +1488,48 @@ c}}}
 %%%
 %
 \ifDS@ACS
-   %\hskip12\Q{\HeadfontE{\pageref{ipsj@firstpage}--\pageref{ipsj@lastpage}}}\ %
-   %\HeadfontE{(\@monthyear)}%
+   \hskip12\Q{\HeadfontE{\pageref{ipsj@firstpage}--\pageref{ipsj@lastpage}}}\ %
+   \HeadfontE{(\@monthyear)}%
 \else\relax\fi
 %
 \ifDS@PRO
-   %\hskip12\Q{\HeadfontE{\pageref{ipsj@firstpage}--\pageref{ipsj@lastpage}}}\ %
-   %\HeadfontE{(\@monthyear)}%
+   \hskip12\Q{\HeadfontE{\pageref{ipsj@firstpage}--\pageref{ipsj@lastpage}}}\ %
+   \HeadfontE{(\@monthyear)}%
 \else\relax\fi
 %
 \ifDS@TOD
-   %\hskip12\Q{\HeadfontE{\pageref{ipsj@firstpage}--\pageref{ipsj@lastpage}}}\ %
-   %\HeadfontE{(\@monthyear)}%
+   \hskip12\Q{\HeadfontE{\pageref{ipsj@firstpage}--\pageref{ipsj@lastpage}}}\ %
+   \HeadfontE{(\@monthyear)}%
 \else\relax\fi
 %
 \ifDS@TOM
-   %\hskip12\Q{\HeadfontE{\pageref{ipsj@firstpage}--\pageref{ipsj@lastpage}}}\ %
-   %\HeadfontE{(\@monthyear)}%
+   \hskip12\Q{\HeadfontE{\pageref{ipsj@firstpage}--\pageref{ipsj@lastpage}}}\ %
+   \HeadfontE{(\@monthyear)}%
 \else\relax\fi
 %
 \ifDS@TBIO
-   %\hskip12\Q{\HeadfontE{\pageref{ipsj@firstpage}--\pageref{ipsj@lastpage}}}\ %
-   %\HeadfontE{(\@monthyear)}%
+   \hskip12\Q{\HeadfontE{\pageref{ipsj@firstpage}--\pageref{ipsj@lastpage}}}\ %
+   \HeadfontE{(\@monthyear)}%
 \else\relax\fi
 %
 \ifDS@CVA
-   %\hskip12\Q{\HeadfontE{\pageref{ipsj@firstpage}--\pageref{ipsj@lastpage}}}\ %
-   %\HeadfontE{(\@monthyear)}%
+   \hskip12\Q{\HeadfontE{\pageref{ipsj@firstpage}--\pageref{ipsj@lastpage}}}\ %
+   \HeadfontE{(\@monthyear)}%
 \else\relax\fi
 %
 \ifDS@SLDM
-   %\hskip12\Q{\HeadfontE{\pageref{ipsj@firstpage}--\pageref{ipsj@lastpage}}}\ %
-   %\HeadfontE{(\@monthyear)}%
+   \hskip12\Q{\HeadfontE{\pageref{ipsj@firstpage}--\pageref{ipsj@lastpage}}}\ %
+   \HeadfontE{(\@monthyear)}%
 \else\relax\fi
 %
 \ifDS@English
-   %\hskip12\Q{\HeadfontE{\pageref{ipsj@firstpage}--\pageref{ipsj@lastpage}}}\ %
-   %\HeadfontE{(\@monthyear)}%
+   \hskip12\Q{\HeadfontE{\pageref{ipsj@firstpage}--\pageref{ipsj@lastpage}}}\ %
+   \HeadfontE{(\@monthyear)}%
 \else\relax\fi
 %
 \ifDS@CDS
-   %\hskip12\Q{\HeadfontE{\pageref{ipsj@firstpage}--\pageref{ipsj@lastpage}}}\ %
-   %\HeadfontE{(\@monthyear)}%
+   \hskip12\Q{\HeadfontE{\pageref{ipsj@firstpage}--\pageref{ipsj@lastpage}}}\ %
+   \HeadfontE{(\@monthyear)}%
 \else\relax\fi
 %
 %%%
@@ -1548,30 +1549,8 @@ c}}}
 \rlap{%
 %\fontsize{10\Q}{0\h}\usefont{OT1}{ptm}{m}{n}%Times
 %\selectfont%
-{\bothashira%%
-}}%
-\hfil
-%\fontsize{13\Q}{0\h}\usefont{OT1}{ptm}{m}{n}%Times
-%\selectfont%
-{\botnomble%
-%%%%%%
-%\ifDS@ACS{\thepage}\else\fi
-%\ifDS@PRO{\thepage}\else\fi
-%\ifDS@TOD{\thepage}\else\fi
-%\ifDS@TOM{\thepage}\else\fi
-%\ifDS@TBIO{\thepage}\else\fi
-%\ifDS@CVA{\thepage}\else\fi
-%\ifDS@SLDM{\thepage}\else\fi
-%\ifDS@English{\thepage}\else\fi
-%\ifDS@CDS{\thepage}\else\fi
-%%%%%
-\@Rbot}}%
- \let\@evenhead\@oddhead
- \def\@evenfoot{\@Lbot%
-\rlap{%
-%\fontsize{10\Q}{0\h}\usefont{OT1}{ptm}{m}{n}%Times
-%\selectfont%
-{\bothashira%%
+{\bothashira%
+%\copyright \ {\@footyear} Information Processing Society of Japan%
 }}%
 \hfil
 %\fontsize{13\Q}{0\h}\usefont{OT1}{ptm}{m}{n}%Times
@@ -1623,20 +1602,8 @@ c}}}
  \def\@oddfoot{\@Lbot%
 \rlap{%\fontsize{10\Q}{0\h}\usefont{OT1}{ptm}{m}{n}%Times
 %\selectfont%
-{\bothashira%%
-}}%
-\hfil%
-%\fontsize{13\Q}{0H}\usefont{OT1}{ptm}{m}{n}%Times
-%\selectfont%
-%{\botnomble%
-%{\thepage}}%
-\@Rbot}%
- \let\@evenhead\@oddhead
- \def\@evenfoot{\@Lbot%
-\rlap{%\fontsize{10\Q}{0\h}\usefont{OT1}{ptm}{m}{n}%Times
-%\selectfont%
 {\bothashira%
-{\textcopyrighttx} \ {\@footyear} Information Processing Society of Japan%
+%{\textcopyrighttx} \ {\@footyear} Information Processing Society of Japan%
 }}%
 \hfil%
 %\fontsize{13\Q}{0H}\usefont{OT1}{ptm}{m}{n}%Times
@@ -1660,7 +1627,7 @@ c}}}
 \def\ipsj@year{%
 \ifDS@EEE
 \ifnum\c@year<\z@
-%\c@year1992 \advance\c@year\c@volume 
+\c@year1992 \advance\c@year\c@volume 
 \fi\fi
 \ifDS@ACS 
 \ifnum\c@year<\z@
@@ -1730,8 +1697,8 @@ c}}}
 
 \def\@monthyear{\ipsj@month \hskip.5\Cwd \ipsj@year}
 
-%\def\@footyear{\ipsj@year}
-\def\@footyear{2019}
+\def\@footyear{\ipsj@year}
+
 
 \newcounter{volume} \c@volume\z@
 \newcounter{number} \c@number\z@
@@ -5457,7 +5424,7 @@ $\langle$\nobreak{#2}\nobreak$\rangle$}
 \prebreakpenalty\jis"215B=\@M		% 】
 
 \prebreakpenalty`ー=\@M						% 2.12(6)
-\prebreakpenalty`?=\@M						% 2.12(6)
+\prebreakpenalty`〜=\@M						% 2.12(6)
 
 \prebreakpenalty`ぁ=\@M
 \prebreakpenalty`ぃ=\@M

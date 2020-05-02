@@ -1,0 +1,65 @@
+\documentclass[Japanese]{dicomopapers}
+%\documentclass[Japanese,noauthor]{dicomopapers}
+\usepackage[dvips]{graphicx}
+\usepackage{latexsym}
+\usepackage{url}
+\def\Underline{\setbox0\hbox\bgroup\let\\\endUnderline}
+\def\endUnderline{\vphantom{y}\egroup\smash{\underline{\box0}}\\}
+\def\|{\verb|}
+
+%概要投稿用余白調整ここから
+\setlength{\Jauthorjreceivesep}{0.0mm}
+\setlength{\Jreceivejabstsep}{0.0mm}
+\setlength{\Jabstsepjkeyword}{0.0mm}
+\setlength{\Jkeywordetitle}{0.0mm}
+%概要投稿用余白調整ここまで
+
+\begin{document}
+
+% 和文表題
+\title{異種無線による電力効率化のための\\ノードのグループ構成手法のシミュレーション}
+
+% 英文表題
+\etitle{Simulation of Node Group Construction Method for Energy Efficiency}
+
+% 所属ラベルの定義
+\affiliate{FUN_STU}{公立はこだて未来大学大学院~システム情報科学研究科}
+\affiliate{FUN_T}{公立はこだて未来大学~システム情報科学部}
+
+\author{戸澤涼}{RYO TOZAWA}{FUN_STU}
+\author{稲村浩}{HIROSHI INAMURA}{FUN_T}
+\author{中村嘉隆}{YOSHITAKA NAKAMURA}{FUN_T}
+
+
+% 表題などの出力
+\maketitle
+
+% 本文はここから始まる
+\section{概要}
+WSN（WSN: Wireless Sensor Network）は，IoTにおけるセンサネットワーク技術である．IoTの利用用途は，環境モニタリング，ビル管理，スマートホーム等が挙げられる．IoTの代表例となるセンサデバイスは，バッテリ駆動の制約によるデバイスの省電力化及び遠隔におけるノード管理の必要性，低伝送量，ノード数の増加によるネットワークの混雑等が課題となっている．これらの課題に対し，WSNにおいて省電力で広域カバレッジを特徴とする省電力広域通信規格の一つであるLoRaWANが選択肢として注目されている．LoRaWANとは，LoRaという長距離通信を特徴とした省電力広域ネットワークプロトコルである．スター型のトポロジや免許不要の周波帯を利用しているためネットワーク構築が低コストで可能であることが可能である．しかし，LoRaWANの課題として，ネットワーク内のデバイス数が増加した際にパケット到達率が低下するという課題がある．以上の背景から，LoRaWANについて，スケーラビリティを考慮した高集積なセンサネットワークの研究が行われている．既存手法では，WSN内で幾つかのセンサからなるグループを作成しグループの代表がセンサ情報を集約し代理送信することで，ネットワークの収容数向上と消費電力量削減の可能性を提示した．しかし，グループ構成手法を用いるには，センサ間の直接通信が必要になる．LoRaWANのみでは仕様上実現が困難である上に，グループの生成や維持などにおける具体化が求められる．そこで我々は先行研究\cite{me_research}として，消費電力（削減・平準化）の観点で，市販されているLoRaWANとBLEが搭載されたモジュールに着目し，遠距離通信はLoRaWAN，近距離通信はBLEを用いることで異種通信の消費電力を考慮したグループ構成手法を提案し，電力実測実験のもと有効性を提示した．
+
+\par
+本稿では，提案手法の有効性を評価するために応用として，実環境においてゴミ収集のIoT化を推進した場合，提案手法を用いた場合の方がLoRaWANのみの既存ソリューションと比較し，消費電力の観点で有効であるかをネットワークシミュレーターのns3を用いて評価する．実環境として，愛知県東浦町が発行しているゴミステーションマップから位置座標及びゴミ系統（燃えるゴミ・燃えないゴミ・資源ごみ）を取得し，ゴミステーションの座標をセンサの位置情報とする．各ゴミ系統に対しセンサを取り付けると仮定し，ゴミステーション毎にグループを構築する．センサノードの通信間隔は，Soracomという国内のLoRaWANプロバイダのユースケース\cite{garbage_station}を基準として用いる．現状は，LoRaWANとBLEを異種無線とし検証しているが，センサの配置によって異種無線の組み合わせを変更することで，グループの構成が変化し，消費電力削減の可能性が考えられるためこちらについても検証を行う．
+
+\begin{table}[h]
+    \centering
+    \caption{LoRaWANのユースケース}\label{fig:LoRaWAN_Usecase}
+    \scalebox{0.8}{
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+    \textbf{ケース} & \textbf{GW接続デバイス (台)} & \textbf{ゲートウェイ (台)} & \textbf{通信頻度} \\ \hline
+    電灯監視         & 200               & １                   & 1分毎           \\ \hline
+    ゴミ箱          & 2000              & 4                   & 10分毎          \\ \hline
+    GPSトラック      & 3000              & 5                   & 15分毎          \\ \hline
+    水道メーター       & 30000             & 10                  & 30分毎          \\ \hline
+    パーキングメーター    & 60000             & 15                  & 1時間毎          \\ \hline
+    \end{tabular}
+    }
+\end{table}
+
+\begin{thebibliography}{4}
+    \bibitem{me_research} 戸澤涼, 稲村浩, 中村嘉隆:  高集積センサネットワークにおける 異種無線を用いた電力効率化の研究, 情報処理, Vol.82, No.3, pp.97-98 (2020)
+    \bibitem{garbage_station} オープンデータ ごみステーション|東浦町（最終閲覧日：2020年3月10日），\url{https://www.town.aichi-higashiura.lg.jp/soshiki/kohojoho/kohotokei/gyomu/opendata/1514185444468.html}
+\end{thebibliography}
+
+\end{document}

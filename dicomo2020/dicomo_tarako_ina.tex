@@ -1,0 +1,226 @@
+\documentclass[Japanese]{dicomopapers}
+%\documentclass[Japanese,noauthor]{dicomopapers}
+
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{latexsym}
+\usepackage{otf}
+\usepackage[hyphens]{url}
+
+\def\Underline{\setbox0\hbox\bgroup\let\\\endUnderline}
+\def\endUnderline{\vphantom{y}\egroup\smash{\underline{\box0}}\\}
+\def\|{\verb|}
+
+% %概要投稿用余白調整ここから
+% \setlength{\Jauthorjreceivesep}{0.0mm}
+% \setlength{\Jreceivejabstsep}{0.0mm}
+% \setlength{\Jabstsepjkeyword}{0.0mm}
+% \setlength{\Jkeywordetitle}{0.0mm}
+% %概要投稿用余白調整ここまで
+
+\begin{document}
+
+% 和文表題
+\title{異種無線による電力効率化のための\\ノードのグループ構成手法のシミュレーション}
+% 英文表題
+\etitle{Simulation of Node Group Construction Method for Energy Efficiency}
+% 所属ラベルの定義
+\affiliate{FUN1}{公立はこだて未来大学大学院 システム情報科学研究科}
+\affiliate{FUN2}{公立はこだて未来大学 システム情報科学部}
+% 著者
+\author{戸澤 涼}{RYO TOZAWA}{FUN1}
+\author{稲村 浩}{HIROSHI INAMURA}{FUN2}
+\author{中村 嘉隆}{YOSHITAKA NAKAMURA}{FUN2}
+% 概要
+\begin{abstract}
+IoT センサデバイスは，バッテリー駆動が前提となるため省電力化が重要である．LoRaWAN は，無線センサネットワーク（WSN:Wireless Sensor Network）において省電力で広域カバレッジを実現している．LoRaWAN には，WSN 内のデバイス増加時にメッセージ衝突によるパケット到達率低下というスケーラビリティでの課題がある．本研究では，WSN内で複数ノードのグループを自律的に構成し代表がデータを集約し代理送信する手法を基本に遠距離，近距離において異種通信を使い分けることで，WSN の電力効率化を図る．先行研究として，異種無線を組み合わせた場合と既存のLoRaのみのWSNにおける消費電力の差異を実測にて検証し，提案したプロトコルを用いた際のデータの集約による消費電力の効率化に関する消費電力のモデル式を実測データで評価により提案手法の有効性を提示した．本稿では，提案手法の有効性を評価するために応用として，実環境においてゴミ収集のIoT化を推進した場合，提案手法を用いた場合の方がLoRaWANのみの既存ソリューションと比較し，消費電力の観点で有効であるかをネットワークシミュレーターのns3を用いて評価する．
+\end{abstract}
+
+% 表題などの出力
+\maketitle
+
+% 本文はここから始まる
+% 問題と貢献
+\section{はじめに}
+WSN（WSN: Wireless Sensor Network）は，IoTにおけるセンサネットワーク技術である．IoTの利用用途は，環境モニタリング，ビル管理，スマートホーム等が挙げられる．IoTの代表例となるセンサデバイスは，バッテリ駆動の制約によるデバイスの省電力化及び遠隔におけるノード管理の必要性，低伝送量，ノード数の増加によるネットワークの混雑等が課題となっている．これらの課題に対し，WSNにおいて省電力で広域カバレッジを特徴とする省電力広域通信規格の一つであるLoRaWANが選択肢として注目されている．LoRaWANとは，LoRaという長距離通信を特徴とした省電力広域ネットワークプロトコルである．スター型のトポロジや免許不要の周波帯を利用しているためネットワーク構築が低コストで可能であることが可能である．しかし，LoRaWANの課題として，ネットワーク内のデバイス数が増加した際にパケット到達率が低下するという課題がある．以上の背景から，LoRaWANについて，スケーラビリティを考慮した高集積なセンサネットワークの研究が行われている．既存手法では，WSN内で幾つかのセンサからなるグループを作成しグループの代表がセンサ情報を集約し代理送信することで，ネットワークの収容数向上と消費電力量削減の可能性を提示した．しかし，グループ構成手法を用いるには，センサ間の直接通信が必要になる．LoRaWANのみでは仕様上実現が困難である上に，グループの生成や維持などにおける具体化が求められる．そこで我々は先行研究として，消費電力（削減・平準化）の観点で，市販されているLoRaWANとBLEが搭載されたモジュールに着目し，遠距離通信はLoRaWAN，近距離通信はBLEを用いることで異種通信の消費電力を考慮したグループ構成手法を提案し，電力実測実験のもと有効性を提示した．
+
+\par
+本稿では，提案手法の有効性を評価するために応用として，実環境においてゴミ収集のIoT化を推進した場合，提案手法を用いた場合の方がLoRaWANのみの既存ソリューションと比較し，消費電力の観点で有効であるかをネットワークシミュレーターのns3を用いて評価する．
+
+\section{関連研究}
+\subsection{LoRaWANにおけるネットワーク効率化のためのノードのグループ化構成法と通信制御方式}
+LoRaWANにはノード数のスケーラビリティ，及び拡散率による通信時間が大きく異なるという課題がある．手柴らが提案する手法\cite{group}は，消費電力量を抑制しセンサノードのバッテリ寿命を延伸するため，GWとセンサノードの距離，ノード数，消費電力量をもとにノードのグループを作成し，GC（GC: Group Coordinator）と呼ぶセンサノードを経由して通信する．想定環境は，ノードが均一に分布されたネットワークであり，センサノードが持つ通信モジュールはスケジュールされた時刻に下り受信が可能なLoRaWAN のクラスBである．アプローチを下記に示す．センサノードはネットワークに参加後，指定されたグループ内のGCを経由しデータを送信する．通信時間による消費電力量効率化のため，拡散率とそれに伴う通信時間をもとに，同一周波数を異なる時間のスロットへ分割する．グループの構成により，センサノード全てがGWと接続する既存モデルと比較し合計送信時間が削減される可能性がある．拡散率を考慮した時間スロットの割当により，同一周波数を一定時間で分割する時分割多元接続（TDMA: Time Division Multiple Access）により時間スロットの効率的な割当が可能となると述べている．
+\par
+課題として，グループ化にはセンサノード間での通信が必要となるが，LoRaWAN の仕様上，実現が困難である点，グループ編成時にネットワークサーバにセンサノードの物理的位置を手動で登録しなければならない点つまり動的なノードの変化への対応が困難であることやGCにLoRaWANの利用が集中することによる消費電力増加が考慮されていない点等があげられる．そこで本研究では，グループ化手法を活かし異種無線を用いた消費電力効率化，及びノードの情報を用いて自律的にグルーピングを行う．
+
+\subsection{LPWA通信を利用するIoTプラットフォーム向けの電力効率を考慮したゲートウェイ配置手法の検討}
+辻丸らが提案する手法\cite{gateway}は，センサノードの消費電力を平準化するため，LoRaWANにおけるゲートウェイの配置を最適化するものである．LoRaWANのようなスター型トポロジの無線ネットワーク構成であると，ノード間の通信距離と消費エネルギーの差異を考慮する必要がある．本研究では，LoRaWANにおける拡散係数を考慮することで通信距離と消費エネルギーのトレードオフを考慮しゲートウェイを複数配置し輻輳を減少させ消費電力を削減している．
+\par
+課題として，拡散率をエネルギー消費のみでノードに割り当てているため，同様の拡散率が割り当てられたセンサノードが密集した場合の衝突可能性が考慮されていない点，ゲートウェイの同時接続数の上限が考慮されていないため，通信の衝突可能性が考慮されていない点が挙げられる．本システムでは既存の
+LoRaWANが提供する機能を用いて解決する．
+
+\section{提案方式}
+提案方式では，LoRaWANネットワークにおいて電力効率化のためのグループ化方式の実現を目的とする．
+ここで，電力効率化とはノードの消費電力削減及び各ノードの消費電力量が均一となる平準化を含む．
+
+\subsection{グループ化}
+異種無線によるグループ化の具体的な手法とプロトコルを示す．
+
+\subsubsection{センサノード間通信}
+LoRaWANの長距離伝送の回数を減らし，センサネットワーク全体の消費電力削減するため，異種無線（LoRaWAN, BLE）(図\ref{group_topology}参照）を適用する．集約ノード（GL: Group Leader）は，グループ内はBLE，ゲートウェイとはLoRaWANを用いてデータの送受信を行う．通常ノード（GM: Group Member）は，BLEにてデータの送受信を行う．
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=5cm]{./img/group_topology.png}
+    \caption{グループ化のトポロジ}
+    \label{group_topology}
+\end{figure}
+
+\subsubsection{グループ構成法}
+既存手法\cite{group}ではグループを作成する際に，全てのセンサノードの位置を事前にLoRaWANのNSが把握していることが前提条件となっている．ネットワーク運用者の管理コストを削減するため，センサ起動時に周囲のセンサノード情報を取得しNSに提供することで，センサノード増減に合わせ能動的にグループを構成する．
+\par
+センサ起動からグループを作成するまでのプロトコルを説明する．センサは起動時に，データ収集時間（$T_{da}$: Data Acquisition Time）の間，BLEを用いて（表参照）を発信するとともに，（表参照）を受信する．起動から$T_{da}$経ったのち，NSへ送信する．その際，NSには以下の情報（表参照）が集まる．NSは，重複を排除したのち，お互いに到達可能なノード同士でグループを作成し，各ノードからみた信号強度が最も高いノードをGLとする．
+
+\subsubsection{電力平準化のためのグループ再構成}
+既存手法\cite{group}では，GCがグループ内のセンサノードの通信を集約すると述べていた．これにより，GWに接続するセンサノードが減りスケーラビリティを向上させることができる．しかし，GCでの通信回数が増加するため，GCの消費電力量の増加が顕著になることが懸念される．消費電力平準化のため，バッテリ残量を推測しグループ内におけるGLの入れ替えを行う．
+\par
+グループ再構成のプロトコルを説明する．各ノードは，異種無線の通信回数をローカルに保持し，GLがその値を元に各センサのバッテリ残量を推測する．そして，バッテリ残量に余裕のあるノードを次のGLとしグループに通知する．
+    
+\subsubsection{センサノードの近接性を考慮した拡散率・通信タイミング割当の検討}
+既存研究\cite{gateway}では，LoRaWANは長距離通信になるほど消費電力が増加するため，GWノードとセンサノードの距離をもとに適切な拡散率を割り当てていた．しかし，シミュレーションの環境が密集した住宅街であったため，隣接したノードが同様の拡散率のもと通信を開始した場合に，衝突が発生し，パケット到達率が大きく低下することが懸念される．グループ化にも同様のことが言え，隣接したグループにおいて，拡散率の割当や通信タイミングの制御を検討する必要がある．提案方式では，拡散率の割当は，GWとの距離により適切な拡散率を割り当てるLoRaWANのADR（ADR: Adaptive Data Rate）機能を用い，通信タイミングの割当は，ACKによる再送制御を行うLoRaWANのConfirmed Data modeを用いる．
+
+\subsection{システム構成}
+システム構成図（図\ref{tarako_architecture}参照）を示す．システムが想定するセンサデバイスは，異種無線（BLE, LoRaWAN）の通信機能を持つモジュールを搭載している．LoRaWANネットワークは，３つのコンポーネントからなり，センサノード・ゲートウェイ（GW: Gateway）・ネットワーク制御を行うネットワークサーバ（NS: Network Server）から構成されたスター型トポロジである．NSで受信したセンサデータは，クラウド上のデータストアに保存される．提案方式は，前述したLoRaWANネットワークのアーキテクチャを拡張し，グループの作成・通知を行うアプリケーションサーバ（AP: Application Server）を配置する．
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=7.5cm]{img/LoRaWAN.png}
+    \caption{システム構成図}
+    \label{tarako_architecture}
+\end{figure}
+
+\subsection{想定する環境}
+提案方式では，隣接したセンサノード同士でグループを構成し，通信を行う．LoRaWANは，デバイスが安価であり利用において免許を必要としないため，都市部のような密集地域では，センサノードが隣接している可能性が考えられる．従って，本システムが想定する環境は，異種無線によるグループ化の適応機会が望める都市部，郊外のようなセンサノードが密集する可能性を持つ地域である．
+
+\section{評価実験}
+\subsection{実環境に基づいたシミュレーション環境の設定}
+既存手法と比較し，提案手法はグループを収集したノードの情報から自動で作成するため，様々なシチュエーションにおいて展開可能である．ゴミ収集はIoTを導入したことにより，定期的な作業員の回収業務からセンサが検知した場合に回収する形態へ変化した．回収業務は効率化されるが，センサは電池給電であるためバッテリの交換作業が追加で必要となる．国内のゴミ収集におけるIoT利用例では，利用者の電源管理における負担を軽減するため，月に1度の充電で済むようシステムを提供している．電源管理のコストを削減するには，バッテリ交換時期は長く1度に交換できる数も多い方が良い．提案手法が上記の観点で，既存のLPWAソリューションと比較し有効であるか検証するため，シミュレーションを実行する．
+
+\subsubsection{ゴミステーションにおけるグループ化}
+実環境として，愛知県東浦町が発行しているゴミステーションマップ（図\ref{garbage_station_map}参照）から位置座標及びゴミ系統（燃えるゴミ・燃えないゴミ・資源ごみ）を取得し，ゴミステーションの座標をセンサの位置情報とする．各ゴミ系統に対しセンサを取り付けると仮定し，ゴミステーション毎にグループを構築する．以降，各ごみ系統に対してセンサ取り付けたものをスマートゴミ箱と称する．文献\cite{smart_garbage}を参考に，スマートゴミ箱の仕様を表\ref{tab:smart_garbage_spec}参照に示す．スマートゴミ箱の状態を超音波センサを用い3種類で把握する．
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=7.5cm]{img/garbage_station.png}
+    \caption{愛知県東浦町ゴミステーションマップ}
+    \label{garbage_station_map}
+\end{figure}
+
+\begin{table}[h]
+    \centering
+    \caption{スマートゴミ箱の仕様}\label{tab:smart_garbage_spec}
+    \begin{tabular}{|c|c|}
+    \hline
+    \textbf{Parameter} & \textbf{Value} \\ \hline
+    status   & Empty, Filled, Full   \\ \hline
+    sensor   & Ultrasonic sensor     \\ \hline
+    wireless & LoRaWAN, BLE          \\ \hline
+    \end{tabular}
+\end{table}
+
+\subsection{シミュレーションシナリオ}
+実験の目的を達成するため以下のシミュレーションシナリオを2つ用意した．前者は性能評価のため，LoRaWANのみを搭載したノードとLoRaWAN及びBLEを搭載したノードにグループ化を適用したケースで試行した．後者は地理的条件によってグループ化に適した無線通信方式を明らかにするため，ノードの通信可能距離を，100m(BLE4.0)，400m(BLE5.0)，1km(LoRa)と変化させ試行した．ノードは，文献\cite{lorawan_usecase}より抽出した表\ref{fig:LoRaWAN_Usecase}に則り10分間に1度ゴミ箱の残容量をネットワークサーバへ送信する．表\ref{fig:group_parameter}にシミュレーションに用いたパラメーターを示す．ネットワークサーバ側で，センサデバイスとセンサデータを紐づけるため，GLのペイロードは，BLEのネットワークアドレスとセンサデータを集約するノード分送信する．
+
+\begin{table}[h]
+    \centering
+    \caption{LoRaWANのユースケース}\label{fig:LoRaWAN_Usecase}
+    \scalebox{0.8}{
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+    \textbf{ケース} & \textbf{GW接続デバイス (台)} & \textbf{ゲートウェイ (台)} & \textbf{通信頻度} \\ \hline
+    電灯監視         & 200               & １                   & 1分毎           \\ \hline
+    ゴミ箱          & 2000              & 4                   & 10分毎          \\ \hline
+    GPSトラック      & 3000              & 5                   & 15分毎          \\ \hline
+    水道メーター       & 30000             & 10                  & 30分毎          \\ \hline
+    パーキングメーター    & 60000             & 15                  & 1時間毎          \\ \hline
+    \end{tabular}
+    }
+\end{table}
+
+\begin{table}[h]
+    \centering
+    \caption{グループ化におけるパラメータ}\label{fig:group_parameter}
+    \begin{tabular}{|c|c|}
+    \hline
+    \textbf{Parameter}     & \textbf{Value}               \\ \hline
+    map                    & $400km^{2}$    　             \\ \hline
+    number of gateways     & 3                             \\ \hline
+    number of nodes        & 1276                          \\ \hline
+    activation time        & 0                             \\ \hline
+    connection interval    & 10m                           \\ \hline
+    ble address (short)    & 4byte                         \\ \hline
+    lorawan payload        & 11 \~\ 242byte                \\ \hline
+    group leader payload   & 8byte * number of nodes       \\ \hline
+    group member payload   & 4byte                         \\ \hline
+    ADR                    & True                          \\ \hline
+    simulation time        & 24h                           \\ \hline
+    \end{tabular}
+\end{table}
+
+\subsection{消費エネルギーの計測}
+消費電力量に関して，正確なエネルギーを導出することは困難であるため，消費電流量の計測をもって評価する．異種無線の消費電流量の計算は，LoRaWANは文献\cite{lorawan_github}が提供する電力モデルを用いる．BLEは，文献\cite{ble_energy_consumption}を参考にRx，Tx時の値を用いる．
+
+\subsubsection{GW・ノードの配置}
+LoRaWANのGWの通信可能距離は都市部や郊外では，$5km$程度と言われている．図\ref{garbage_station_map}をもとに，全てのスマートゴミ箱に対し，カバレッジを確保できるようにGWを図\ref{lorawan_area}のように配置した．シミュレーションに用いたノード，GWの座標は表\ref{tab:gateway_position_detail}に示す．
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=7.5cm]{img/lorawan_area.png}
+    \caption{カバレッジを考慮したGWの配置}
+    \label{lorawan_area}
+\end{figure}
+
+\begin{table}[h]
+    \centering
+    \caption{ゲートウェイの配置場所詳細}
+    \label{tab:gateway_position_detail}
+    \begin{tabular}{|c|c|}
+    \hline
+    \textbf{名前} & \textbf{座標} \\ \hline
+    東浦町卯ノ里小 & (34.969392, 136.924615) \\ \hline
+    愛知県立東浦高 & (34.953981, 136.962864) \\ \hline
+    東浦町立東浦中 & (34.973183, 136.967018) \\ \hline
+    \end{tabular}
+\end{table}
+
+\section{結果と考察}
+\section{おわりに}
+\subsection{まとめ}
+\subsection{今後の展望}
+
+\begin{thebibliography}{4}
+    \bibitem{me_research} 戸澤涼, 稲村浩, 中村嘉隆:  高集積センサネットワークにおける異種無線を用いた電力効率化の研究, 情報処理, Vol.82, No.3, pp.97-98 (2020)
+    
+    \bibitem{garbage_station} オープンデータ ごみステーション|東浦町（最終閲覧日：2020年3月10日）, \url{https://www.town.aichi-higashiura.lg.jp/soshiki/kohojoho/kohotokei/gyomu/opendata/1514185444468.html}
+
+    \bibitem{gateway} 辻丸勇樹, 坂本龍一, 近藤正章, 中村宏: LPWA通信を利用するIoTプラットフォーム向けの電力効率を考慮したゲートウェイ配置手法の検討, 情報処理学会研究報告会, Vol.32, No.1, pp.46–53（2017）
+
+    \bibitem{group} 手柴瑞基, 湯素華, 小花貞夫: LoRaWANにおけるネットワーク効率化のためのノードのグループ構成法と通信制御方式, 情報処理学会研究報告会, Vol.89, No.13, pp.1-8（2018）
+
+    \bibitem{lora_signal_coverage} Dambal, Vageesh and Mohadikar, Sameer and Kumbhar, Abhaykumar and Guvenc, Ismail: Improving LoRa Signal Coverage in Urban and Sub-Urban Environments with UAVs, arXiv, 1902.11243（2019）
+
+    \bibitem{lorawan_energy_efficiency} Wu, He and Nabar, Sidharth and Poovendran, Radha: An Energy Framework for the Network Simulator 3 (ns-3), SIMUTools 2011 - 4th International ICST Conference on Simulation Tools and Techniques, 
+
+    \bibitem{lorawan_range} LoRaWAN Range Part 2: Range and Coverage of LoRaWAN in Practice (Updated)（最終閲覧日：2020年4月6日）, \url{https://smartmakers.io/en/lorawan-range-part-2-range-and-coverage-of-lorawan-in-practice}
+
+    \bibitem{lorawan_github} signetlabdei/lorawan: \url{https://github.com/signetlabdei/lorawan}
+
+    \bibitem{smart_garbage} Joni, Koko and Haryanto, Haryanto and Rohim, D: Smart Garbage Based on Internet of Things (IoT), Journal of Physics: Conference Series, Vol.953, pp.012189
+
+    \bibitem{lorawan_usecase} 1台のLoRaゲートウェイでどれくらいのデバイスに対応できますか?（最終閲覧日：2020年4月30日）, \url{https://soracom.zendesk.com/hc/ja/articles/115001237211-%EF%BC%91%E5%8F%B0%E3%81%AELoRa%E3%82%B2%E3%83%BC%E3%83%88%E3%82%A6%E3%82%A7%E3%82%A4%E3%81%A7%E3%81%A9%E3%82%8C%E3%81%8F%E3%82%89%E3%81%84%E3%81%AE%E3%83%87%E3%83%90%E3%82%A4%E3%82%B9%E3%81%AB%E5%AF%BE%E5%BF%9C%E3%81%A7%E3%81%8D%E3%81%BE%E3%81%99%E3%81%8B-}
+
+    \bibitem{ble_energy_consumption} Power consumption analysis of bluetooth low energy commercial products and theirimplications for IoT applications.Electronics (Switzerland), 7(12), 2018
+
+\end{thebibliography}
+
+\end{document}
