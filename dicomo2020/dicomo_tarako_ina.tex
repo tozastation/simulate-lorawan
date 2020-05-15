@@ -5,6 +5,7 @@
 \usepackage{latexsym}
 \usepackage{otf}
 \usepackage[hyphens]{url}
+\usepackage{comment}
 
 \def\Underline{\setbox0\hbox\bgroup\let\\\endUnderline}
 \def\endUnderline{\vphantom{y}\egroup\smash{\underline{\box0}}\\}
@@ -112,7 +113,7 @@ IoTとセンサネットワークの応用として都市におけるの情報�
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=7.5cm]{img/garbage_station.png}
+    \includegraphics[width=8cm]{img/garbage_station.png}
     \caption{愛知県東浦町ゴミステーションマップ}
     \label{garbage_station_map}
 \end{figure}
@@ -130,7 +131,7 @@ IoTとセンサネットワークの応用として都市におけるの情報�
 \end{table}
 
 \subsection{シミュレーションシナリオ}
-実験の目的を達成するため以下のシミュレーションシナリオを2つ用意した．前者は性能評価のため，LoRaWANのみを搭載したノードとLoRaWAN及びBLEを搭載したノードにグループ化を適用したケースで試行した．後者は地理的条件によってグループ化に適した無線通信方式を明らかにするため，ノードの通信可能距離を，100m(BLE4.0)，400m(BLE5.0)，1km(LoRa)と変化させ試行した．ノードは，文献\cite{lorawan_usecase}より抽出した表\ref{fig:LoRaWAN_Usecase}に則り10分間に1度ゴミ箱の残容量をネットワークサーバへ送信する．表\ref{fig:group_parameter}にシミュレーションに用いたパラメーターを示す．ネットワークサーバ側で，センサデバイスとセンサデータを紐づけるため，GLのペイロードは，BLEのネットワークアドレスとセンサデータを集約するノード分送信する．
+実験の目的を達成するため以下のシミュレーションシナリオを用意した．性能評価のため，従来方式（LoRaWAN単独）と単純グループ化，平準化つきグループ化と3つのケースを試行した．ノードは，文献\cite{lorawan_usecase}より抽出した表\ref{fig:LoRaWAN_Usecase}に則り10分間に1度ゴミ箱の残容量をネットワークサーバへ送信する．表\ref{fig:group_parameter}にシミュレーションに用いたパラメーターを示す．ネットワークサーバ側で，センサデバイスとセンサデータを紐づけるため，GLのペイロードは，BLEのネットワークアドレスとセンサデータを，集約するノード分送信する．
 
 \begin{table}[h]
     \centering
@@ -139,11 +140,11 @@ IoTとセンサネットワークの応用として都市におけるの情報�
     \begin{tabular}{|c|c|c|c|}
     \hline
     \textbf{ケース} & \textbf{GW接続デバイス (台)} & \textbf{ゲートウェイ (台)} & \textbf{通信頻度} \\ \hline
-    電灯監視         & 200               & １                   & 1分毎           \\ \hline
+    電灯監視        & 200               & １                   & 1分毎           \\ \hline
     ゴミ箱          & 2000              & 4                   & 10分毎          \\ \hline
-    GPSトラック      & 3000              & 5                   & 15分毎          \\ \hline
-    水道メーター       & 30000             & 10                  & 30分毎          \\ \hline
-    パーキングメーター    & 60000             & 15                  & 1時間毎          \\ \hline
+    GPSトラック     & 3000              & 5                   & 15分毎          \\ \hline
+    水道メーター       & 30000             & 10                & 30分毎          \\ \hline
+    パーキングメーター    & 60000             & 15              & 1時間毎          \\ \hline
     \end{tabular}
     }
 \end{table}
@@ -153,31 +154,30 @@ IoTとセンサネットワークの応用として都市におけるの情報�
     \caption{グループ化におけるパラメータ}\label{fig:group_parameter}
     \begin{tabular}{|c|c|}
     \hline
-    \textbf{Parameter}     & \textbf{Value}               \\ \hline
-    map                    & $400km^{2}$    　             \\ \hline
-    number of gateways     & 3                             \\ \hline
-    number of nodes        & 1276                          \\ \hline
-    activation time        & 0                             \\ \hline
+    \textbf{Parameter}     & \textbf{Value}                \\ \hline
+    number of gateways     & 1                             \\ \hline
+    number of nodes        & 32                            \\ \hline
+    activation time        & 0s                            \\ \hline
     connection interval    & 10m                           \\ \hline
     ble address (short)    & 4byte                         \\ \hline
     lorawan payload        & 11 \~\ 242byte                \\ \hline
     group leader payload   & 8byte * number of nodes       \\ \hline
     group member payload   & 4byte                         \\ \hline
     LoRaWAN ADR            & True                          \\ \hline
-    simulation time        & 24h                           \\ \hline
+    simulation time        & 1h                            \\ \hline
     \end{tabular}
 \end{table}
 
 \subsection{消費エネルギーの計測}
-消費電力量に関して，正確なエネルギーを導出することは困難であるため，消費電流量の計測をもって評価する．異種無線の消費電流量の計算は，LoRaWANは文献\cite{lorawan_github}が提供する電力モデルを用いる．BLEは，文献\cite{ble_energy_consumption}を参考にRx，Tx時の値を用いる．
+消費電力量に関して，正確なエネルギーを導出することは困難であるため，消費電流量の計測をもって評価する．LoRaWANは，NS3モジュール（文献\cite{lorawan_github}参照）が提供する電力モデルを用いる．BLEは，文献\cite{ble_energy_consumption}を参考にRx（0.003A），Tx（0.003A）とする．
 
 \subsubsection{GW・ノードの配置}
-LoRaWANのGWの通信可能距離は都市部や郊外では，$5km$程度と言われている．図\ref{garbage_station_map}をもとに，全てのスマートゴミ箱に対し，カバレッジを確保できるようにGWを図\ref{lorawan_area}のように配置した．シミュレーションに用いたノード，GWの座標は表\ref{tab:gateway_position_detail}に示す．
+LoRaWANのGWの通信可能距離は，都市部や郊外では$5km$程度と言われている．図\ref{garbage_station_map}をもとに，全てのスマートゴミ箱に対しカバレッジを確保できるようにGWを図\ref{lorawan_area}のように配置した．シミュレーターに用いたGWの座標は表\ref{tab:gateway_position_detail}に示す．
 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=7.5cm]{img/lorawan_area.png}
+    \includegraphics[width=8cm]{img/lorawan_area.png}
     \caption{カバレッジを考慮したGWの配置}
     \label{lorawan_area}
 \end{figure}
@@ -188,7 +188,7 @@ LoRaWANのGWの通信可能距離は都市部や郊外では，$5km$程度と言
     \label{tab:gateway_position_detail}
     \begin{tabular}{|c|c|}
     \hline
-    \textbf{名前} & \textbf{座標} \\ \hline
+    \textbf{名前}    & \textbf{座標} \\ \hline
     東浦町卯ノ里小 　　& (34.969392, 136.924615) \\ \hline
     愛知県立東浦高 　　& (34.953981, 136.962864) \\ \hline
     東浦町立北部中学校 & (34.973183, 136.967018) \\ \hline
@@ -196,58 +196,248 @@ LoRaWANのGWの通信可能距離は都市部や郊外では，$5km$程度と言
 \end{table}
 
 \section{結果と考察}
-\subsection{従来方式とグループ化の消費電流量の比較}
-ノードとGWの配置及び距離を図\ref{gw_node_map}に示す．LoRaWANのみを用いた場合の消費電流量を図\ref{energy_consumption_only_lorawan}に示す．いずれのノードも消費電流量は均一で，0.099 (A)であった．グループ化の消費電流量を図\ref{energy_consumption_grouping_without_eq}に示す．棒グラフの配色について，黒色は構築するグループが存在しないためLoRaWANのみを用いて通信するノード，その他はグループ毎に割り当てられている．GLノードに消費電流量が偏っている．LoRaWANのみのケースと比較し，GLノードの消費電流量に差が生じたのは，GMノードの送信データを集約した分，送信データ量が増加し割り当てられる拡散率が変化したため，送信時の電力が増加したと考えられる．グループ化に平準化の機能を用いた消費電流量を図\ref{energy_consumption_with_eq}に示す．ノード毎の起動時間は同様の値であったが，グループ毎の総消費電流量には差が見られた．前述したグループ化と同様，送信容量やGWとの距離により消費電力に差が発生したと考えられる．各方式でのネットワーク総消費電流量について，表\ref{total_network_energy_consumption}に示す．全ノードの消費電流量の総和を比較すると，グループ化，平準化を用いたグループ化，LoRaWANのみの通信の順に優位であった．平準化を用いた方式の方が，グループ化と比較し約7$\%$程度増加したのは，GLノードがGMノードに対して新たな送信先を通知するため，BLEでのTx, Rxの回数が増えたことが理由であると考える．
+従来方式（LoRaWAN単独），単純グループ化，平準化つきグループ化について，ノード毎の消費電流量をまとめた．シミュレーターの都合上，町内全てのノードでの再現が難しかったため地域を限定し行った．対象地域では，全てのグループが3ノードで構成されている．LoRaWANノードに割り当てるデータレートをADRにて自動で調節し全てのケースでDR5を選択したまた，消費電流量の値を元にバッテリー交換機会についての言及も行う．バッテリーの参考値として，屋外でのLoRaWANモジュール\cite{outdoor_lorawan_module}に搭載されている充電式バッテリー（4100mAh）を用いる．シミュレーターでの実測値と実際の製品のスペックとの間に差があったため，前者に合わせBLEの負荷電流を調整しシミューションを行った．計測した各通信方式の1送信あたりの消費電流量を表\ref{one_shot_cc}に示す．
+
+\begin{table}[h]
+    \centering
+    \caption{1送信あたりの消費電流量（グループは3ノードの場合）}
+    \label{tab:one_shot_cc}
+    \begin{tabular}{|c|c|}
+    \hline
+    \textbf{Parameter} & \textbf{Value}   \\ \hline
+    LoRaWAN                   & 8mA       \\ \hline
+    GL（単純グループ化）         & 13.4mA    \\ \hline
+    GM（単純グループ化）         & 0.6mA     \\ \hline
+    GL（平準化つきグループ化）    & 14.4mA    \\ \hline
+    GM（平準化つきグループ化）    & 1.2mA     \\ \hline
+    \end{tabular}
+\end{table}
+
+\subsection{従来方式（LoRaWAN単独）}
+1時間あたりの従来方式（LoRaWAN単独）の消費電流量を図\ref{energy_consumption_only_lorawan}に示す．その他取得した値を表\ref{tab:lorawan_result}に示す．いずれのノードも消費電流量は均一で，差分は0.001A（≒1mA）とLoRaWAN1送信分にも満たない小さい値であった．ノード間で差が起きた理由としては，図\ref{garbage_box_diss_location}より，スマートゴミ箱が設置されている箇所によりGWとの距離に差があるためである．バッテリー交換機会に関して，表\ref{tab:one_shot_cc}の値を用いてバッテリーの持ち時間を計算すると，10分に1度の送信というユースケースで約21日間利用可能である．ノードのバッテリー残量が均一に減少するため，スマートゴミ箱のグループ単位で交換作業を同時に行うことが可能である．
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=10cm]{img/garbage_box_location.png}
-    \caption{GWとノードの配置}
-    \label{gw_node_map}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=10cm]{img/lorawan_energy_consumption.png}
-    \caption{LoRaWANのみの消費電流量}
+    \includegraphics[width=8cm]{img/lorawan_energy_consumption.png}
+    \caption{従来方式（LoRaWAN単独）の消費電流量}
     \label{energy_consumption_only_lorawan}
 \end{figure}
 
+\begin{table}[h]
+    \centering
+    \caption{従来方式（LoRaWAN単独）の結果}
+    \label{tab:lorawan_result}
+    \begin{tabular}{|c|c|}
+    \hline
+    \textbf{Parameter} & \textbf{Value}   \\ \hline
+    ネットワーク全体の消費電流量              & 1.627A     \\ \hline
+    パケット到達率（LoRaWaN）               & 100\%\     \\ \hline
+    ノード間の消費電流量における差分最大値      & 0.001A     \\ \hline
+    \end{tabular}
+\end{table}
+
 \begin{figure}[h]
     \centering
-    \includegraphics[width=10cm]{img/group_energy_consumption_without_eq.png}
-    \caption{グループ化の消費電流量}
+    \includegraphics[width=8cm]{img/garbage_box_location.png}
+    \caption{GWと各ノードの距離関係}
+    \label{garbage_box_diss_location}
+\end{figure}
+
+\subsection{単純グループ化}
+1時間あたりのグループ化の消費電流量を図\ref{energy_consumption_grouping_without_eq}に示す．1時間毎の消費電流量を図\ref{gec_all}に示す．その他取得した値を表\ref{tab:simple_grouping_result}に示す．棒グラフの配色について，黒は設置されているスマートゴミ箱が単体であるため，構築できるグループが存在しないという理由からLoRaWANのみを用いて通信するノード，その他は参加するグループ毎に割り当てられている．図\ref{energy_consumption_grouping_without_eq}を見ると，GLノードに消費電流量が偏っている．表\ref{tab:one_shot_cc}より，従来方式（LoRaWAN単独）と比較しGLノードの消費電流量に差が生じたのは，GMノードのセンサデータを集約した分，送信データ量が増加したことによる割り当てられる通信時間の増加であると考えられる．表\ref{tab:simple_grouping_result}より，パケット到達率はいずれの通信方式においても100 \%\ を示した．バッテリー交換機会に関して，表\ref{tab:one_shot_cc}の値を用いてバッテリーの持ち時間を計算すると，前述したユースケースで，GLノードが約13日，GMノードが約285日間利用可能である．
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=8cm]{img/group_without_eq/group_consumption_without_eq_1_hour.png}
+    \caption{単純グループ化の消費電流量（LoRaWAN単独比較用）}
     \label{energy_consumption_grouping_without_eq}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=10cm]{img/group_energy_consumption_with_eq.png}
-    \caption{グループ化（平準化）の消費電流量}
-    \label{energy_consumption_grouping_with_eq}
+    \includegraphics[width=7.5cm]{img/group_without_eq/all.png}
+    \caption{単純グループ化の消費電流量}
+    \label{gec_all}
 \end{figure}
 
 \begin{table}[h]
     \centering
-    \caption{ネットワーク総消費電流量}
-    \label{tab:total_network_energy_consumption}
-    \begin{tabular}{|c|c|}
+    \caption{単純グループ化の消費電流量まとめ}
+    \label{tab:simple_grouping_result}
+    \scalebox{0.8}[0.8]{
+    \begin{tabular}{|c|c|c|c|c|}
     \hline
-    \textbf{項目} & \textbf{値} \\ \hline
-    LoRaWAN             &  3.277(A)    \\ \hline
-    グループ化　          &  2.468(A)    \\ \hline
-    グループ化（平準化)    &  2.632(A)    \\ \hline
+    \textbf{時間} & \
+    \begin{tabular}{c} \textbf{ネットワーク全体の} \\ \textbf{消費電流量} \end{tabular} & \
+    \begin{tabular}{c} \textbf{ノード間の} \\ \textbf{消費電流量における} \\ \textbf{差分最大値} \end{tabular} \\ \hline
+    1時間　&　0.769A & 0.052A \\ \hline
+    2時間　&　1.565A & 0.106A \\ \hline
+    3時間　&　2.356A & 0.158A \\ \hline
+    4時間　&　3.147A & 0.212A \\ \hline
     \end{tabular}
+    }
 \end{table}
 
-\subsection{ノードの通信可能距離と消費電力量の比較}
+\begin{table}[h]
+    \centering
+    \caption{単純グループ化のパケット到達率}
+    \label{tab:simple_grouping_result}
+    \scalebox{0.8}[0.8]{
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    \textbf{時間} & \
+    \begin{tabular}{c} \textbf{パケット到達率}　  \\ \textbf{（LoRaWaN）} \end{tabular} & \
+    \begin{tabular}{c} \textbf{パケット到達率}　  \\ \textbf{（BLE）} \end{tabular} \\ \hline
+    1時間　&　100 \%\  &　100 \%\ \\ \hline
+    2時間　&　100 \%\  &　100 \%\ \\ \hline
+    3時間　&　100 \%\  &　100 \%\ \\ \hline
+    4時間　&　100 \%\  &　100 \%\ \\ \hline
+    \end{tabular}
+    }
+\end{table}
+
+\subsection{平準化つきグループ化}
+GLノードの交換頻度が毎回であるケースの1時間毎の消費電流量を，図\ref{with_eq_1time}に示す．表\ref{gec_with_eq_1time_all}を元に，前述した単純グループ化と比較すると，ノード間の消費電流量の差分が，0.052Aから0.026Aと半分に削減された．これは，GLノードが送信するごとに次のGLノードを選出し切り替えを行ったためである．図\ref{gec_with_eq_1time_all}，表\ref{tab:one_shot_cc}を見ると，従来方式（LoRaWAN単独）と比較し，平準化つきグループ化ではデータを集約すること，GLノード通知のためBLEによる通信回数が増えることの2つの理由から，バッテリー交換のタイミングを合わせようとすると消費電流量が増加する傾向にある．
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=7.5cm]{img/group_with_eq/1time.png}
+    \caption{平準化つきグループ化の消費電流量（交替頻度:毎回）}
+    \label{with_eq_1time}
+\end{figure}
+
+\begin{table}[h]
+    \centering
+    \caption{平準化つきグループ化の消費電流量まとめ（交替頻度:毎回）}
+    \label{tab:with_eq_1time_ec}
+    \scalebox{0.8}[0.8]{
+    \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{時間} & \
+    \begin{tabular}{c} \textbf{ネットワーク全体の} \\ \textbf{消費電流量} \end{tabular} & \
+    \begin{tabular}{c} \textbf{ノード間の} \\ \textbf{消費電流量における} \\ \textbf{差分最大値} \end{tabular} \\ \hline
+    1時間　&　1.105A & 0.026A \\ \hline
+    2時間　&　3.121A & 0.072A \\ \hline
+    3時間　&　5.852A & 0.077A \\ \hline
+    4時間　&　9.126A & 0.185A \\ \hline
+    \end{tabular}
+    }
+\end{table}
+
+\begin{table}[h]
+    \centering
+    \caption{平準化つきグループ化のパケット到達率（交替頻度:毎回）}
+    \label{tab:with_eq_1time_packet}
+    \scalebox{0.8}[0.8]{
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    \textbf{時間} & \
+    \begin{tabular}{c} \textbf{パケット到達率}　  \\ \textbf{（LoRaWaN）} \end{tabular} & \
+    \begin{tabular}{c} \textbf{パケット到達率}　  \\ \textbf{（BLE）} \end{tabular} \\ \hline
+    1時間　&　100 \%\   &　86 \%\ \\ \hline
+    2時間　&　99  \%\   &　82 \%\ \\ \hline
+    3時間　&　96  \%\   &　78 \%\ \\ \hline
+    4時間　&　96  \%\   &　73 \%\ \\ \hline
+    \end{tabular}
+    }
+\end{table}
+
+\subsubsection{GLノードの交換タイミングによる比較}
+グループ内での通信回数を減らし，消費電力を削減するためGLノードの交替頻度を変更しシミュレーションを実行した．グループ内の集約回数が2回でGLノードを更新する場合の結果を，図\ref{with_eq_2time}，表\ref{tab:with_eq_2time_ec}，表\ref{tab:with_eq_2time_packet}に示す．グループ内の集約回数が3回でGLノードを更新する場合の結果を，図\ref{with_eq_3time}，表\ref{tab:with_eq_3time_ec}，表\ref{tab:with_eq_3time_packet}に示す．図\ref{with_eq_2time}，図\ref{with_eq_3time}を見ると，交換頻度が低くなるほどLoRaWAN単独でのノードとの消費電流量差が小さくなっている．交換頻度が3回に1回になった際に，グループを構築しているノード方が消費電流量を下回り始めた．これは，表\ref{tab:simple_grouping_result}より，GLノード切り替えを行わない方式の場合はパケット到達率が100 \%\ であること，表\ref{tab:with_eq_1time_packet}，表\ref{tab:with_eq_2time_packet}，表\ref{tab:with_eq_3time_packet}より，原因としてGLノードのダウンリンクが増えたことからBLEでのパケット到達率が減少し，GLノードの切り替えが上手くいっていない事が考えられる．また，GLノードの交換頻度の間隔が長くなり，時間が経過するとともにパケット到達率が減少していることから，通信タイミングの制御を考慮する必要がある．
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=7.5cm]{img/group_with_eq/2time.png}
+    \caption{平準化つきグループ化の消費電流量まとめ（交替頻度:送信2回に1回）}
+    \label{with_eq_2time}
+\end{figure}
+
+\begin{table}[h]
+    \centering
+    \caption{平準化つきグループ化の消費電流量まとめ（交替頻度:送信2回に1回）}
+    \label{tab:with_eq_2time_ec}
+    \scalebox{0.8}[0.8]{
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    \textbf{時間} & \
+    \begin{tabular}{c} \textbf{ネットワーク全体の} \\ \textbf{消費電流量} \end{tabular} & \
+    \begin{tabular}{c} \textbf{ノード間の} \\ \textbf{消費電流量における} \\ \textbf{差分最大値} \end{tabular} \\ \hline
+    1時間　&　1.052A & 0.029A \\ \hline
+    2時間　&　3.116A & 0.030A  \\ \hline
+    3時間　&　5.452A & 0.037A \\ \hline
+    4時間　&　8.163A & 0.074A \\ \hline
+    \end{tabular}
+    }
+\end{table}
+
+\begin{table}[h]
+    \centering
+    \caption{平準化つきグループ化のパケット到達率（交替頻度:送信2回に1回）}
+    \label{tab:with_eq_2time_packet}
+    \scalebox{0.8}[0.8]{
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    \textbf{時間} & \
+    \begin{tabular}{c} \textbf{パケット到達率}　  \\ \textbf{（LoRaWaN）} \end{tabular} & \
+    \begin{tabular}{c} \textbf{パケット到達率}　  \\ \textbf{（BLE）} \end{tabular} \\ \hline
+    1時間　& 100\%\   &　80 \%\ \\ \hline
+    2時間　& 99 \%\   &　86 \%\ \\ \hline
+    3時間　& 96 \%\   &　80 \%\ \\ \hline
+    4時間　& 92 \%\   &　75 \%\ \\ \hline
+    \end{tabular}
+    }
+\end{table}
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=7.5cm]{img/group_with_eq/3time.png}
+    \caption{平準化つきグループ化の消費電流量（交替頻度:送信3回に1回）}
+    \label{with_eq_3time}
+\end{figure}
+
+\begin{table}[h]
+    \centering
+    \caption{平準化つきグループ化の消費電流量まとめ（交替頻度:送信3回に1回）}
+    \label{tab:with_eq_3time_ec}
+    \scalebox{0.8}[0.8]{
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    \textbf{時間} & \
+    \begin{tabular}{c} \textbf{ネットワーク全体の} \\ \textbf{消費電流量} \end{tabular} & \
+    \begin{tabular}{c} \textbf{ノード間の} \\ \textbf{消費電流量における} \\ \textbf{差分最大値} \end{tabular} \\ \hline
+    1時間　&　1.052A & 0.029A  \\ \hline
+    2時間　&　2.347A & 0.067A  \\ \hline
+    3時間　&　4.07A  & 0.063A  \\ \hline
+    4時間　&　6.061A & 0.107A  \\ \hline
+    \end{tabular}
+    }
+\end{table}
+
+\begin{table}[h]
+    \centering
+    \caption{平準化つきグループ化のパケット到達率（交替頻度:送信3回に1回）}
+    \label{tab:with_eq_3time_packet}
+    \scalebox{0.8}[0.8]{
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    \textbf{時間} & \
+    \begin{tabular}{c} \textbf{パケット到達率}　  \\ \textbf{（LoRaWaN）} \end{tabular} & \
+    \begin{tabular}{c} \textbf{パケット到達率}　  \\ \textbf{（BLE）} \end{tabular} \\ \hline
+    1時間　&　100 \%\ &　80 \%\ \\ \hline
+    2時間　&　99 \%\  &　71 \%\ \\ \hline
+    3時間　&　99 \%\  &　69 \%\ \\ \hline
+    4時間　&　93 \%\  &　71 \%\ \\ \hline
+    \end{tabular}
+    }
+\end{table}
 
 \section{おわりに}
 WSNでは，電池駆動型のIoTセンサでは省電力化の議論がされている．WSNの中でも，LoRaWANという長距離通信，低消費電力を特徴とする通信規格では都市部や市街地のような密集地において，ノードの台数が増加した際に，通信の衝突から再送が発生し結果としてバッテリー寿命が短命化するという課題がある．そこで我々は，WSNの消費電力効率化（消費電力削減・消費電力平準化）のためのBLE，LoRaを組み合わせた異種無線によるノードのグループ化の実現を本研究の目的においた．目的の実現のために，既存の通信規格のプロトコルを変更せず異種無線の消費電力効率化が実現可能なシステムを設計した．提案したシステムは，ノードが収集可能な情報からのグループ構築機能，各ノードの通信における，Rx，Txの理論値及び通信利用回数等からバッテリー残量を算出し，GLの切り替えを行う電力平準化機能を実装することで，WSNのオペレーターは，既存の通信方式と同様の利用で，バッテリー寿命を延伸することが実現可能となる．
 \par
 その有効性を確認するため，提案システムをごみ収集のスマートIoT化を話題とし，実世界を再現しシミュレーションを行った．
 \par
-今後の課題として．．．
+平準化つきグループ化において，パケット到達率向上のためGLノードのダウンリンクのタイミングを調整するという課題が挙げられる．今後はグループ内でBLEの通信が衝突しない手法を検討する予定である．
 
 \begin{thebibliography}{4}
     \bibitem{me_research} 戸澤涼, 稲村浩, 中村嘉隆:  高集積センサネットワークにおける異種無線を用いた電力効率化の研究, 情報処理, Vol.82, No.3, pp.97-98 (2020)
@@ -277,6 +467,8 @@ WSNでは，電池駆動型のIoTセンサでは省電力化の議論がされ�
     \bibitem{smart_trash_bin} Kristanto, Slamet and Yashiro, Takeshi and Koshizuka, Noboru and Sakamura, Ken: Dynamic Polling Algorithm for Low Energy Garbage Level Measurement in Smart Trash Bin, Proceedings of the Second International Conference on IoT in Urban Space, No.92-94, 2016
 
     \bibitem{smart_waste_management} Fedchenkov, Petr and Zaslavsky, Arkady and Sosunova, Inna: Enabling Smart Waste Management with Sensorized Garbage Bins and Low Power Data Communications Network, Proceedings of the Seventh International Conference on the Internet of Things, No.28, 2017
+
+    \bibitem{outdoor_lorawan_module} Outdoor LoRa/LoRaWAN Wireless I/O Module（最終閲覧日：2020年5月7日）, \url{https://www.advantech.com/products/23ed4776-1633-4901-a776-8532a23ea8b4/wise-4610/mod_b9c0a2e0-c841-4826-8008-36a91d837e1e}
 
 \end{thebibliography}
 
